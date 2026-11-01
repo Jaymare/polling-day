@@ -1,0 +1,355 @@
+:root {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --rule: #c9c9c9;
+  --band: #2b2b2b;
+  --band-text: #ffffff;
+  --font-head: "Work Sans", system-ui, sans-serif;
+  --font-body: "Open Sans", system-ui, sans-serif;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161616;
+    --text: #ececec;
+    --muted: #9a9a9a;
+    --rule: #3d3d3d;
+    --band: #ececec;
+    --band-text: #161616;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+/* Headlines and main labels: Work Sans, all caps. Everything else is Open Sans. */
+.title-bar h1,
+.corner,
+.stage-head__num,
+.stage-head h2,
+.region-head,
+.drawer__head h2,
+.collection-table th {
+  font-family: var(--font-head);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.title-bar {
+  background: var(--band);
+  color: var(--band-text);
+  margin: 0 -16px 40px;
+  padding: 22px 16px;
+  text-align: center;
+}
+.title-bar h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Board: regions are rows, stages are columns. Wide boards scroll sideways
+   inside this box rather than the page; the region column stays pinned. */
+.board-scroll {
+  overflow-x: auto;
+}
+.board-grid {
+  display: grid;
+  /* Stage columns size to their content; any spare width is shared out */
+  grid-template-columns: 200px repeat(var(--stages), auto);
+  column-gap: 14px;
+  min-width: max-content;
+}
+
+/* Stage columns: padding plus the column gap give the spacing; a dotted
+   line separates each stage from the one before it. */
+.stage-head,
+.cell {
+  padding-left: 14px;
+}
+.stage-head:not(.corner + .stage-head),
+.cell:not(.region-head + .cell) {
+  border-left: 1px dotted var(--muted);
+}
+
+.corner,
+.region-head {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg);
+  border-right: 1px solid var(--text);
+  padding-right: 16px;
+}
+.corner {
+  display: flex;
+  align-items: end;
+  padding-bottom: 14px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+.stage-head {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding-bottom: 14px;
+}
+.stage-head__num {
+  font-size: 1.1rem;
+}
+.stage-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.stage-head p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+/* "i" icon whose note shows on hover or keyboard focus */
+.info {
+  position: relative;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+.info__icon {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 13px;
+  color: var(--muted);
+  cursor: help;
+}
+.info__icon:hover,
+.info__icon:focus-visible {
+  color: var(--text);
+  border-color: var(--text);
+}
+.info__tip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: 240px;
+  padding: 8px 10px;
+  background: var(--band);
+  color: var(--band-text);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s;
+}
+.info:hover .info__tip,
+.info__icon:focus-visible + .info__tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.region-head {
+  padding-top: 14px;
+  padding-bottom: 18px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center; /* vertically centre the name in its row */
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.cell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 14px; /* matches the padding-left, so the rule starts where the content starts */
+  right: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.cell {
+  min-height: 64px;
+  padding-top: 14px;
+  padding-bottom: 18px;
+  position: relative;
+}
+/* Checklist: the box ticks once the item's date is today or earlier */
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+input[type="checkbox"] {
+  margin: 0;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+.check__label {
+  flex: 1;
+  max-width: 28ch; /* long items wrap rather than widening the column */
+}
+/* Underlined, borderless inputs used for dates, names and methods */
+.check__date,
+.collection-table__contact,
+.collection-table__method {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 2px 0;
+}
+.check__date {
+  margin-left: auto; /* keep dates on the column's right edge */
+  font-size: 0.75rem;
+  color-scheme: light dark;
+}
+.check.is-done .check__label,
+.check.is-done .check__date {
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .board-grid {
+    grid-template-columns: 130px repeat(var(--stages), auto);
+    column-gap: 9px;
+  }
+  .stage-head,
+  .cell {
+    padding-left: 9px;
+  }
+}
+
+/* Summary for stages tracked item by item; opens the side panel */
+.collection-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 180px;
+  padding: 0;
+  text-align: left;
+  font-size: 0.85rem;
+}
+.collection-summary:hover .collection-summary__text { text-decoration: underline; }
+.collection-summary__bar {
+  height: 4px;
+  background: var(--rule);
+}
+.collection-summary__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--text);
+}
+
+/* Side panel (modal dialog pinned to the right edge) */
+.drawer {
+  margin: 0 0 0 auto;
+  padding: 0;
+  width: min(560px, 100vw);
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  border: none;
+  border-left: 1px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
+  overflow-y: auto;
+}
+.drawer::backdrop { background: rgb(0 0 0 / 0.25); }
+.drawer__body { padding: 24px 20px; }
+.drawer__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+  padding-bottom: 14px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--text);
+}
+.drawer__head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.drawer__head p { margin: 4px 0 0; color: var(--muted); font-size: 0.8rem; }
+.drawer__close { font-size: 1.5rem; line-height: 1; padding: 0 4px; color: var(--muted); }
+.drawer__close:hover { color: var(--text); }
+
+.collection-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.collection-table th {
+  padding: 8px 6px;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.collection-table__group th {
+  padding: 18px 6px 6px;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.collection-table__group span { margin-left: 8px; color: var(--muted); font-family: var(--font-body); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.collection-table td { padding: 6px; border-top: 1px solid var(--rule); }
+.collection-table__contact { width: 100%; }
+.collection-table tr.is-done .collection-table__name,
+.collection-table tr.is-done input { color: var(--muted); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.collection-table__contact:disabled { border-bottom-color: transparent; }
+.collection-table__contact:disabled::placeholder { color: transparent; }
