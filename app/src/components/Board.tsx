@@ -5,6 +5,8 @@ import {
   checkKey,
   collectionSize,
   countDone,
+  dateReached,
+  isStageDone,
   type Collection,
   type CollectionStore,
   type Region,
@@ -98,19 +100,33 @@ function RegionRow({
   today: string;
   onOpenCollection: (stage: string, collection: Collection) => void;
 }) {
+  const store = { ...props, today };
+  // The region is up to its first unfinished stage (-1 once all are done)
+  const current = STAGES.findIndex((s) => !isStageDone(s, region, store));
+
   return (
     <>
       <div className="region-head">{region}</div>
-      {STAGES.map((s) => {
+      {STAGES.map((s, i) => {
         const collection = s.collection?.(region);
+        const progress =
+          current === -1 || i < current
+            ? "is-done"
+            : i === current
+              ? "is-current"
+              : "is-upcoming";
         return (
-          <div key={s.title} className="cell">
+          <div
+            key={s.title}
+            className={`cell ${progress}`}
+            aria-current={i === current ? "step" : undefined}
+          >
             {collection ? (
               <CollectionSummary
                 stage={s.title}
                 region={region}
                 collection={collection}
-                store={{ ...props, today }}
+                store={store}
                 onOpen={() => onOpenCollection(s.title, collection)}
               />
             ) : (
@@ -186,7 +202,7 @@ function Checklist({
       {items.map((item) => {
         const key = checkKey(stage, region, item);
         const date = dates[key] ?? "";
-        const done = date !== "" && date <= today;
+        const done = dateReached(date, today);
 
         return (
           <li key={item} className={`check${done ? " is-done" : ""}`}>

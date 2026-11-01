@@ -181,6 +181,10 @@ export function missingForTick(
   return "";
 }
 
+// A date of today or earlier; "" means no date yet
+export const dateReached = (date: string, today: string) =>
+  date !== "" && date <= today;
+
 // An item is done once it has everything it needs (method, contact) and a
 // date of today or earlier.
 export function isDone(
@@ -188,11 +192,9 @@ export function isDone(
   collection: Collection,
   store: CollectionStore,
 ) {
-  const date = store.dates[key] ?? "";
   return (
     !missingForTick(key, collection, store) &&
-    date !== "" &&
-    date <= store.today
+    dateReached(store.dates[key] ?? "", store.today)
   );
 }
 
@@ -311,3 +313,19 @@ export const STAGES: Stage[] = [
     collection: stageThreeCollection,
   },
 ];
+
+export function isStageDone(
+  stage: Stage,
+  region: Region,
+  store: CollectionStore,
+) {
+  const collection = stage.collection?.(region);
+  if (collection)
+    return (
+      countDone(stage.title, region, collection, store) ===
+      collectionSize(collection)
+    );
+  return (stage.checklist?.(region) ?? []).every((item) =>
+    dateReached(store.dates[checkKey(stage.title, region, item)] ?? "", store.today),
+  );
+}

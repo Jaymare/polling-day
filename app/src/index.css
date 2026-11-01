@@ -5,6 +5,7 @@
   --rule: #c9c9c9;
   --band: #2b2b2b;
   --band-text: #ffffff;
+  --accent: #ff4b33;
   --font-head: "Work Sans", system-ui, sans-serif;
   --font-body: "Open Sans", system-ui, sans-serif;
   font-family: var(--font-body);
@@ -206,6 +207,27 @@ button {
   padding-bottom: 18px;
   position: relative;
 }
+/* Where each region is up to: earlier stages are muted, the current stage
+   gets a solid bar over its dotted separator, later stages are faded. */
+.cell.is-current::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: var(--accent);
+}
+.cell.is-upcoming > * {
+  opacity: 0.5;
+}
+.cell.is-done .collection-summary {
+  color: var(--muted);
+}
+.cell.is-done .collection-summary__bar > span {
+  background: var(--muted);
+}
+
 /* Checklist: the box ticks once the item's date is today or earlier */
 .checklist {
   list-style: none;
