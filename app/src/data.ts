@@ -222,9 +222,9 @@ const PLACEHOLDER_BOOTHS = Array.from(
 type Distribution = "posted" | "booth pick-up" | "district pick-up";
 
 const DISTRIBUTION: Record<Region, Distribution> = {
-  "Eastern Victoria": "posted",
-  "Northern Victoria": "posted",
-  "Western Victoria": "posted",
+  "Eastern Victoria": "district pick-up",
+  "Northern Victoria": "district pick-up",
+  "Western Victoria": "district pick-up",
   "North-Eastern Metropolitan": "district pick-up",
   "South-Eastern Metropolitan": "district pick-up",
   "Southern Metropolitan": "district pick-up",
@@ -234,7 +234,10 @@ const DISTRIBUTION: Record<Region, Distribution> = {
 
 type Labels = Omit<Collection, "unit" | "itemLabel" | "groups">;
 
-const COLLECTED: Labels = { doneLabel: "collected", contactLabel: "Collected by" };
+const COLLECTED: Labels = {
+  doneLabel: "collected",
+  contactLabel: "Collected by",
+};
 
 const boothCollection = (region: Region, labels: Labels): Collection => ({
   unit: "booths",
@@ -253,7 +256,7 @@ const districtCollection = (region: Region, labels: Labels): Collection => ({
   groups: [{ items: REGION_DISTRICTS[region] }],
 });
 
-// Stage Two checklist items. Items are placeholders for now.
+// Stage Two checklist items.
 const STAGE_TWO_ITEMS: Record<Distribution, readonly string[]> = {
   posted: ["Broken into **booths** with **t-shirt** allowance for postage"],
   "district pick-up": [
@@ -326,6 +329,9 @@ export function isStageDone(
       collectionSize(collection)
     );
   return (stage.checklist?.(region) ?? []).every((item) =>
-    dateReached(store.dates[checkKey(stage.title, region, item)] ?? "", store.today),
+    dateReached(
+      store.dates[checkKey(stage.title, region, item)] ?? "",
+      store.today,
+    ),
   );
 }
