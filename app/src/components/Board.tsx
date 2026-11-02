@@ -12,6 +12,7 @@ import {
   type Region,
 } from "../data";
 import { CollectionPanel } from "./CollectionPanel";
+import { withBold } from "../withBold";
 
 type Props = Omit<CollectionStore, "today"> & {
   onSetDate: (key: string, date: string) => void;
@@ -175,13 +176,6 @@ function CollectionSummary({
       </span>
     </button>
   );
-}
-
-// Renders **text** as bold; everything else stays plain
-function withBold(text: string) {
-  return text
-    .split(/\*\*(.+?)\*\*/)
-    .map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part));
 }
 
 function Checklist({
