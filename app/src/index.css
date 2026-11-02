@@ -90,10 +90,6 @@ body {
 }
 
 /* Home page activity log: newest first, one block per day */
-.activity {
-  max-width: 760px;
-  margin: 0 auto;
-}
 .activity__title {
   margin: 0 0 8px;
   padding-bottom: 14px;
